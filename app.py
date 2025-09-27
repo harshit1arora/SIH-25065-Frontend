@@ -46,7 +46,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # API endpoints
-API_BASE_URL = "https://sih-25065-production.up.railway.app/"  # Your backend URL
+API_BASE_URL = os.environ.get("API_BASE_URL", "https://sih-25065-production.up.railway.app")
 GEOCODING_API_URL = f"{API_BASE_URL}/api/geocode"
 RAINFALL_API_URL = f"{API_BASE_URL}/api/rainfall"
 GROUNDWATER_API_URL = f"{API_BASE_URL}/api/groundwater"
