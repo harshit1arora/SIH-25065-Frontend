@@ -614,57 +614,74 @@ import streamlit.components.v1 as components
 
 iframe_html = """
 <style>
-#jal-chat-fab {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  width: 64px;
-  height: 64px;
-  z-index: 9999;
-  background: #2563eb;
-  color: #fff;
-  border-radius: 50%;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.24);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 2rem;
-}
-#jal-chat-iframe-wrapper {
-  display: none;
-  position: fixed;
-  bottom: 100px;
-  right: 32px;
-  z-index: 10000;
-}
-#jal-chat-iframe {
-  width: 400px;
-  height: 600px;
-  border: none;
-  border-radius: 18px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
-  background: white;
-}
+  /* Floating chat button */
+  #jal-chat-fab {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 64px;
+    height: 64px;
+    z-index: 9999;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.24);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2rem;
+  }
+  /* Chat iframe container, hidden by default */
+  #jal-chat-iframe-wrapper {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 32px;
+    z-index: 10000;
+  }
+  /* The chat iframe styling */
+  #jal-chat-iframe {
+    width: 400px;
+    height: 600px;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    background: white;
+  }
+  /* Close button for chat popup */
+  #close-btn {
+    text-align: right;
+    margin-top: 6px;
+  }
+  #close-btn button {
+    background:#ef4444;
+    color:white;
+    border:none;
+    border-radius:6px;
+    padding:4px 12px;
+    font-weight:bold;
+    cursor:pointer;
+  }
 </style>
-<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">💬</div>
+<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">🤖</div>
 <div id="jal-chat-iframe-wrapper">
   <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
-  <div style="text-align:right;">
-    <button style="margin-top:8px; background:#ef4444; color:white; border:none; border-radius:6px; padding:4px 12px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
+  <div id="close-btn">
+    <button onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
   </div>
 </div>
 """
 
-components.html(iframe_html, height=650, width=420, scrolling=False)
+components.html(iframe_html, height=700, width=440, scrolling=False)
 
 
 # Footer
 st.markdown("---")
 st.markdown("""
 <footer>
-    <p>Developed for sustainable water management | © 2023 Central Ground Water Board (CGWB)</p>
-    <p>For technical support: [support@rwhindia.org](mailto:support@rwhindia.org) | Phone: +91-XXX-XXXX-XXXX</p>
+    <p>Developed for sustainable water management | © 2025 Team Vrun Ventures</p>
+    <p>For technical support: [support@rwhindia.org](mailto:support@rwhindia.org) | Phone: +91-9876543210</p>
 </footer>
 """, unsafe_allow_html=True)
 
@@ -680,7 +697,7 @@ if st.session_state.calculation_done and st.session_state.user_data['assessment_
             
             # Simulate download link
             st.sidebar.download_button(
-                label="📥 Download PDF Report",
+                label="Download PDF Report",
                 data="Simulated PDF content would be here",
                 file_name=f"RWH_Assessment_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                 mime="application/pdf"
