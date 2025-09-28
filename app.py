@@ -617,10 +617,10 @@ iframe_html = """
   #jal-chat-fab {
     position: fixed;
     bottom: 40px;
-    right: 8px; /* <-- Make this smaller for the furthest right */
+    right: 12px;  /* fully right aligned with some margin */
     width: 64px;
     height: 64px;
-    z-index: 9999;
+    z-index: 99999;
     background: #2563eb;
     color: #fff;
     border-radius: 50%;
@@ -629,47 +629,83 @@ iframe_html = """
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 2rem;
+    font-size: 2.5rem; /* larger for max presence */
+    transition: background-color 0.3s ease;
+  }
+  #jal-chat-fab:hover {
+    background-color: #1d4ed8;
   }
   #jal-chat-iframe-wrapper {
     display: none;
     position: fixed;
-    bottom: 100px;
-    right: 8px; /* <-- Match to FAB */
-    z-index: 10000;
+    bottom: 110px; /* floating above the icon */
+    right: 12px;  /* align with the icon */
+    width: 420px;  /* slightly wider for better UI */
+    height: 650px;
+    z-index: 100000;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    background: white;
+    overflow: hidden;
+    animation: slideIn 0.4s ease forwards;
   }
   #jal-chat-iframe {
-    width: 400px;
-    height: 600px;
+    width: 100%;
+    height: 100%;
     border: none;
-    border-radius: 18px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
-    background: white;
+    border-radius: 20px 20px 0 0;
   }
   #close-btn {
     text-align: right;
-    margin-top: 6px;
+    padding: 8px 16px;
+    background: #f9fafb;
+    border-radius: 0 0 20px 20px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
   }
   #close-btn button {
-    background:#ef4444;
-    color:white;
-    border:none;
-    border-radius:6px;
-    padding:4px 12px;
-    font-weight:bold;
-    cursor:pointer;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #close-btn button:hover {
+    background-color: #dc2626;
+  }
+
+  /* Slide animation for chat window */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
-<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">🤖</div>
-<div id="jal-chat-iframe-wrapper">
-  <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
+
+<div id="jal-chat-fab" title="Open Chat" aria-label="Open Chat" role="button" 
+     onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">
+  🤖
+</div>
+
+<div id="jal-chat-iframe-wrapper" role="region" aria-label="Chat window">
+  <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/" title="Jal Rakshak AI Chatbot"></iframe>
   <div id="close-btn">
-    <button onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
+    <button aria-label="Close Chat" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">
+      Close
+    </button>
   </div>
 </div>
 """
 
 components.html(iframe_html, height=700, width=440, scrolling=False)
+
 
 
 
