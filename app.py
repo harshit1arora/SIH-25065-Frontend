@@ -613,135 +613,125 @@ with tab5:
 # ADD THIS CORRECTED BLOCK AT THE VERY END OF YOUR SCRIPT
 
 # --- Chatbot Integration using st.markdown ---
-# --- Chatbot Integration (Final Version) ---
-chatbot_html = """
-<style>
-    /* Style for the floating action button (FAB) */
-    .chatbot-fab {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 60px;
-        height: 60px;
-        background: #1f77b4;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 24px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        z-index: 1000;
-        border: none;
-        transition: all 0.3s ease;
-    }
-    
-    .chatbot-fab:hover {
-        background: #1666a1;
-        transform: scale(1.1);
-    }
-    
-    /* Chatbot iframe container */
-    .chatbot-container {
-        position: fixed;
-        bottom: 90px;
-        right: 20px;
-        width: 380px;
-        height: 600px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        z-index: 1001;
-        display: none;
-        flex-direction: column;
-        border: 1px solid #ddd;
-    }
-    
-    .chatbot-header {
-        background: #1f77b4;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 10px 10px 0 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .chatbot-iframe {
-        flex: 1;
-        border: none;
-        border-radius: 0 0 10px 10px;
-    }
-    
-    .close-btn {
-        background: transparent;
-        border: none;
-        color: white;
-        font-size: 18px;
-        cursor: pointer;
-        padding: 0;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .close-btn:hover {
-        background: rgba(255,255,255,0.2);
-    }
-</style>
+# --- Chatbot Integration (Fixed Version) ---
+import streamlit.components.v1 as components
 
-<script>
-function toggleChatbot() {
-    const chatbot = document.getElementById('chatbotContainer');
-    const fab = document.getElementById('chatbotFab');
-    
-    if (chatbot.style.display === 'flex') {
-        chatbot.style.display = 'none';
-        fab.style.display = 'flex';
-    } else {
-        chatbot.style.display = 'flex';
-        fab.style.display = 'none';
-    }
-}
-
-// Close chatbot when clicking outside
-document.addEventListener('click', function(event) {
-    const chatbot = document.getElementById('chatbotContainer');
-    const fab = document.getElementById('chatbotFab');
-    
-    if (chatbot.style.display === 'flex') {
-        const isClickInsideChatbot = chatbot.contains(event.target);
-        const isClickOnFab = fab.contains(event.target);
-        
-        if (!isClickInsideChatbot && !isClickOnFab) {
-            chatbot.style.display = 'none';
-            fab.style.display = 'flex';
+# Chatbot component using components.html for better isolation
+chatbot_component = """
+<div id="chatbot-container">
+    <style>
+        /* Floating Action Button */
+        #chat-fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #1f77b4;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 9999;
+            border: none;
+            transition: all 0.3s ease;
         }
-    }
-});
-</script>
+        
+        #chat-fab:hover {
+            background: #1666a1;
+            transform: scale(1.1);
+        }
+        
+        /* Chatbot Iframe */
+        #chat-iframe {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 380px;
+            height: 600px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10000;
+            display: none;
+            background: white;
+        }
+        
+        /* Close Button */
+        #close-chat {
+            position: fixed;
+            bottom: 700px;
+            right: 30px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            z-index: 10001;
+            display: none;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
 
-<!-- Floating Action Button -->
-<button id="chatbotFab" class="chatbot-fab" onclick="toggleChatbot()">
-    🤖
-</button>
+    <!-- Floating Action Button -->
+    <button id="chat-fab" onclick="openChat()">🤖</button>
+    
+    <!-- Close Button -->
+    <button id="close-chat" onclick="closeChat()">Close</button>
+    
+    <!-- Chatbot Iframe -->
+    <iframe id="chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
 
-<!-- Chatbot Container -->
-<div id="chatbotContainer" class="chatbot-container">
-    <div class="chatbot-header">
-        <span style="font-weight: bold;">Jal Rakshak AI Assistant</span>
-        <button class="close-btn" onclick="toggleChatbot()">×</button>
-    </div>
-    <iframe class="chatbot-iframe" src="https://jal-rakshak-ai-v3.vercel.app/" 
-            title="Jal Rakshak AI Chatbot"></iframe>
+    <script>
+        function openChat() {
+            document.getElementById('chat-iframe').style.display = 'block';
+            document.getElementById('close-chat').style.display = 'block';
+            document.getElementById('chat-fab').style.display = 'none';
+        }
+        
+        function closeChat() {
+            document.getElementById('chat-iframe').style.display = 'none';
+            document.getElementById('close-chat').style.display = 'none';
+            document.getElementById('chat-fab').style.display = 'flex';
+        }
+        
+        // Close chat when clicking outside
+        document.addEventListener('click', function(event) {
+            const iframe = document.getElementById('chat-iframe');
+            const fab = document.getElementById('chat-fab');
+            const closeBtn = document.getElementById('close-chat');
+            
+            if (iframe.style.display === 'block') {
+                const isClickInsideIframe = event.target === iframe || iframe.contains(event.target);
+                const isClickOnClose = event.target === closeBtn || closeBtn.contains(event.target);
+                const isClickOnFab = event.target === fab || fab.contains(event.target);
+                
+                if (!isClickInsideIframe && !isClickOnClose && !isClickOnFab) {
+                    closeChat();
+                }
+            }
+        });
+    </script>
 </div>
 """
-st.markdown(chatbot_html, unsafe_allow_html=True)
 
+# Inject the chatbot component
+components.html(chatbot_component, height=0)  # height=0 makes it invisible, we're just injecting the HTML
+
+# Footer
+st.markdown("---")
+st.markdown("""
+<footer>
+    <p>Developed for sustainable water management | © 2025 Team Varun Ventures</p>
+    <p>For technical support: [support@rwhindia.org](mailto:support@rwhindia.org) | Phone: +91-9876543210</p>
+</footer>
+""", unsafe_allow_html=True)
 # Footer
 st.markdown("---")
 st.markdown("""
