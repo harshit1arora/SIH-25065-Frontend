@@ -674,7 +674,8 @@ iframe_html = """
   </div>
 </div>
 """
-st.markdown(chatbot_html, unsafe_allow_html=True)
+
+components.html(iframe_html, height=700, width=440, scrolling=False)
 
 
 # Footer
