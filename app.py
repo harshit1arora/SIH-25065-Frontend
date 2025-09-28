@@ -612,12 +612,13 @@ with tab5:
     """, unsafe_allow_html=True)
 import streamlit.components.v1 as components
 
+# Corrected HTML and CSS for the chatbot component
 iframe_html = """
 <style>
   #jal-chat-fab {
     position: fixed;
-    bottom: 40px;
-    right: 40px; /* <-- Make this smaller for the furthest right */
+    bottom: 15px; /* <-- UPDATED */
+    right: 15px;  /* <-- UPDATED */
     width: 64px;
     height: 64px;
     z-index: 9999;
@@ -634,8 +635,8 @@ iframe_html = """
   #jal-chat-iframe-wrapper {
     display: none;
     position: fixed;
-    bottom: 120px;
-    right: 40px; /* <-- Match to FAB */
+    bottom: 90px; /* <-- UPDATED to position above the new FAB location */
+    right: 15px;  /* <-- UPDATED to match FAB */
     z-index: 10000;
   }
   #jal-chat-iframe {
@@ -669,7 +670,6 @@ iframe_html = """
 </div>
 """
 
-components.html(iframe_html, height=700, width=440, scrolling=False)
 
 
 
