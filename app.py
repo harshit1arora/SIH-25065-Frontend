@@ -613,17 +613,51 @@ with tab5:
 import streamlit.components.v1 as components
 
 iframe_html = """
-<div style='position:fixed; bottom:24px; right:24px; z-index:9999;'>
-  <iframe 
-    src="https://jal-rakshak-ai-v3.vercel.app/"
-    width="400" 
-    height="600" 
-    style="border:none; border-radius:16px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);"
-  ></iframe>
+<style>
+#jal-chat-fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 64px;
+  height: 64px;
+  z-index: 9999;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 2rem;
+}
+#jal-chat-iframe-wrapper {
+  display: none;
+  position: fixed;
+  bottom: 100px;
+  right: 32px;
+  z-index: 10000;
+}
+#jal-chat-iframe {
+  width: 400px;
+  height: 600px;
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+  background: white;
+}
+</style>
+<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">💬</div>
+<div id="jal-chat-iframe-wrapper">
+  <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
+  <div style="text-align:right;">
+    <button style="margin-top:8px; background:#ef4444; color:white; border:none; border-radius:6px; padding:4px 12px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
+  </div>
 </div>
 """
 
 components.html(iframe_html, height=650, width=420, scrolling=False)
+
 
 # Footer
 st.markdown("---")
