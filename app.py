@@ -617,8 +617,8 @@ iframe_html = """
   /* Floating chat button */
   #jal-chat-fab {
     position: fixed;
-    bottom: 32px;
-    right: 32px;
+    bottom: 40px;
+    right: 60px;
     width: 64px;
     height: 64px;
     z-index: 9999;
