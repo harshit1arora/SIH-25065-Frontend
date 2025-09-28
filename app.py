@@ -610,7 +610,20 @@ with tab5:
     <p>Always check local regulations and obtain necessary permits before implementing any rainwater harvesting system.</p>
     </div>
     """, unsafe_allow_html=True)
+import streamlit.components.v1 as components
 
+iframe_html = """
+<div style='position:fixed; bottom:24px; right:24px; z-index:9999;'>
+  <iframe 
+    src="https://jal-rakshak-ai-v3.vercel.app/"
+    width="400" 
+    height="600" 
+    style="border:none; border-radius:16px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);"
+  ></iframe>
+</div>
+"""
+
+components.html(iframe_html, height=650, width=420, scrolling=False)
 # Footer
 st.markdown("---")
 st.markdown("""
