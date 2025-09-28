@@ -624,12 +624,13 @@ iframe_html = """
 """
 
 components.html(iframe_html, height=650, width=420, scrolling=False)
+
 # Footer
 st.markdown("---")
 st.markdown("""
 <footer>
     <p>Developed for sustainable water management | © 2023 Central Ground Water Board (CGWB)</p>
-    <p>For technical support: support@rwhindia.org | Phone: +91-XXX-XXXX-XXXX</p>
+    <p>For technical support: [support@rwhindia.org](mailto:support@rwhindia.org) | Phone: +91-XXX-XXXX-XXXX</p>
 </footer>
 """, unsafe_allow_html=True)
 
