@@ -574,71 +574,85 @@ with tab5:
 
 import streamlit.components.v1 as components
 
-iframe_html = """
+chatbot_html = """
 <style>
+  /* Floating Action Button */
   #jal-chat-fab {
     position: fixed;
     bottom: 40px;
-    right: 8px;
+    right: 40px;  /* 40px from right edge */
     width: 64px;
     height: 64px;
     z-index: 9999;
     background: #2563eb;
-    color: #fff;
+    color: white;
     border-radius: 50%;
     box-shadow: 0 4px 16px rgba(0,0,0,0.24);
-    display: flex; /* Make sure it's flex */
+    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 2rem;
+    transition: transform 0.2s ease-in-out;
   }
+  #jal-chat-fab:hover {
+    transform: scale(1.1);
+  }
+
+  /* Iframe container (hidden initially) */
   #jal-chat-iframe-wrapper {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed;
-    bottom: 100px;
-    right: 8px;
+    bottom: 120px; /* Above the button */
+    right: 40px;   /* Same as button */
     z-index: 10000;
     flex-direction: column;
   }
+
+  /* Chat iframe style */
   #jal-chat-iframe {
     width: 400px;
     height: 600px;
     border: none;
     border-radius: 18px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     background: white;
   }
-  #close-btn {
+
+  /* Close button container */
+  #close-btn-container {
     text-align: right;
-    margin-top: 6px;
+    padding-top: 8px;
   }
-  #close-btn button {
-    background:#ef4444;
-    color:white;
-    border:none;
-    border-radius:6px;
-    padding:4px 12px;
-    font-weight:bold;
-    cursor:pointer;
+
+  /* Close button style */
+  #close-btn-container button {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
 </style>
 
-<div id="jal-chat-fab" style="display: flex;" onclick="
-    console.log('FAB clicked');
-    const wrapper = document.getElementById('jal-chat-iframe-wrapper');
-    wrapper.style.display = 'flex';
-    this.style.display = 'none';
-">🤖</div>
+<!-- Floating chat button -->
+<div id="jal-chat-fab" style="display:flex;" onclick="
+    document.getElementById('jal-chat-iframe-wrapper').style.display='flex';
+    this.style.display='none';
+">
+  🤖
+</div>
 
+<!-- Chat iframe and close button -->
 <div id="jal-chat-iframe-wrapper">
   <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
-  <div id="close-btn">
+  <div id="close-btn-container">
     <button onclick="
-        console.log('Close clicked');
-        const wrapper = document.getElementById('jal-chat-iframe-wrapper');
-        wrapper.style.display = 'none';
-        document.getElementById('jal-chat-fab').style.display = 'flex';
+      document.getElementById('jal-chat-iframe-wrapper').style.display='none';
+      document.getElementById('jal-chat-fab').style.display='flex';
     ">
       Close
     </button>
@@ -646,8 +660,7 @@ iframe_html = """
 </div>
 """
 
-components.html(iframe_html, height=700, width=440, scrolling=False)
-
+st.markdown(chatbot_html, unsafe_allow_html=True)
 
 
 # Footer
