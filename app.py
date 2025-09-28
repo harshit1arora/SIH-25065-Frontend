@@ -572,18 +572,16 @@ with tab5:
     </div>
     """, unsafe_allow_html=True)
 
-import streamlit.components.v1 as components
-
 chatbot_html = """
 <style>
-  /* Floating Action Button */
+  /* Floating button */
   #jal-chat-fab {
     position: fixed;
     bottom: 40px;
-    right: 40px;  /* 40px from right edge */
+    right: 40px;
     width: 64px;
     height: 64px;
-    z-index: 9999;
+    z-index: 30000;
     background: #2563eb;
     color: white;
     border-radius: 50%;
@@ -595,21 +593,24 @@ chatbot_html = """
     font-size: 2rem;
     transition: transform 0.2s ease-in-out;
   }
-  #jal-chat-fab:hover {
-    transform: scale(1.1);
-  }
+  #jal-chat-fab:hover { transform: scale(1.1); }
 
-  /* Iframe container (hidden initially) */
+  /* Chat iframe container - visible by default but hidden with visibility */
   #jal-chat-iframe-wrapper {
-    display: none;
     position: fixed;
-    bottom: 120px; /* Above the button */
-    right: 40px;   /* Same as button */
-    z-index: 10000;
+    bottom: 120px;
+    right: 40px;
+    z-index: 31000;
     flex-direction: column;
+    visibility: hidden;  /* invisible but takes space */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #jal-chat-iframe-wrapper.visible {
+    visibility: visible;
+    opacity: 1;
   }
 
-  /* Chat iframe style */
   #jal-chat-iframe {
     width: 400px;
     height: 600px;
@@ -619,13 +620,11 @@ chatbot_html = """
     background: white;
   }
 
-  /* Close button container */
   #close-btn-container {
     text-align: right;
     padding-top: 8px;
   }
 
-  /* Close button style */
   #close-btn-container button {
     background: #ef4444;
     color: white;
@@ -638,30 +637,29 @@ chatbot_html = """
   }
 </style>
 
-<!-- Floating chat button -->
+<!-- Floating Chat Button -->
 <div id="jal-chat-fab" style="display:flex;" onclick="
-    document.getElementById('jal-chat-iframe-wrapper').style.display='flex';
+    const wrapper = document.getElementById('jal-chat-iframe-wrapper');
+    wrapper.classList.add('visible');
     this.style.display='none';
 ">
   🤖
 </div>
 
-<!-- Chat iframe and close button -->
+<!-- Chat Iframe with Close Button -->
 <div id="jal-chat-iframe-wrapper">
   <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
   <div id="close-btn-container">
     <button onclick="
-      document.getElementById('jal-chat-iframe-wrapper').style.display='none';
-      document.getElementById('jal-chat-fab').style.display='flex';
-    ">
-      Close
-    </button>
+      const wrapper = document.getElementById('jal-chat-iframe-wrapper');
+      wrapper.classList.remove('visible');
+      document.getElementById('jal-chat-fab').style.display = 'flex';
+    ">Close</button>
   </div>
 </div>
 """
 
 st.markdown(chatbot_html, unsafe_allow_html=True)
-
 
 # Footer
 st.markdown("---")
