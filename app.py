@@ -1,3 +1,4 @@
+this is my app.js code for frontend 
 import os
 import streamlit as st
 import requests
@@ -612,16 +613,15 @@ with tab5:
     """, unsafe_allow_html=True)
 import streamlit.components.v1 as components
 
-# Corrected HTML and CSS for the chatbot component
 iframe_html = """
 <style>
   #jal-chat-fab {
     position: fixed;
-    bottom: 15px; /* <-- UPDATED */
-    right: 15px;  /* <-- UPDATED */
+    bottom: 40px;
+    right: 40px; /* <-- Make this smaller for the furthest right */
     width: 64px;
     height: 64px;
-    z-index: 9999;
+    z-index: 30000;
     background: #2563eb;
     color: #fff;
     border-radius: 50%;
@@ -631,13 +631,15 @@ iframe_html = """
     justify-content: center;
     cursor: pointer;
     font-size: 2rem;
+    pointer-events: auto;
   }
   #jal-chat-iframe-wrapper {
     display: none;
     position: fixed;
-    bottom: 90px; /* <-- UPDATED to position above the new FAB location */
-    right: 15px;  /* <-- UPDATED to match FAB */
-    z-index: 10000;
+    bottom: 144px;
+    right: 40px; /* <-- Match to FAB */
+    z-index: 31000;
+    pointer-events: none;
   }
   #jal-chat-iframe {
     width: 400px;
@@ -646,6 +648,7 @@ iframe_html = """
     border-radius: 18px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.3);
     background: white;
+    display: block;
   }
   #close-btn {
     text-align: right;
@@ -661,7 +664,7 @@ iframe_html = """
     cursor:pointer;
   }
 </style>
-<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">🤖</div>
+<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='flex'; this.style.display='none';">🤖</div>
 <div id="jal-chat-iframe-wrapper">
   <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
   <div id="close-btn">
@@ -670,6 +673,7 @@ iframe_html = """
 </div>
 """
 
+components.html(iframe_html, height=700, width=440, scrolling=False)
 
 
 
