@@ -617,7 +617,7 @@ iframe_html = """
   #jal-chat-fab {
     position: fixed;
     bottom: 40px;
-    right: 80px; /* <-- Make this smaller for the furthest right */
+    right: 40px; /* <-- Make this smaller for the furthest right */
     width: 64px;
     height: 64px;
     z-index: 9999;
@@ -634,8 +634,8 @@ iframe_html = """
   #jal-chat-iframe-wrapper {
     display: none;
     position: fixed;
-    bottom: 100px;
-    right: 80px; /* <-- Match to FAB */
+    bottom: 120px;
+    right: 40px; /* <-- Match to FAB */
     z-index: 10000;
   }
   #jal-chat-iframe {
