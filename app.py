@@ -8,7 +8,6 @@ import plotly.express as px
 from datetime import datetime
 import time
 import random
-import streamlit.components.v1 as components
 
 # Set page configuration
 st.set_page_config(
@@ -44,6 +43,28 @@ st.markdown("""
         background-color: #1666a1;
         color: white;
     }
+    
+    /* Chatbot styles */
+    .chatbot-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background: #1f77b4;
+        color: white;
+        border-radius: 50%;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+    .chatbot-button:hover {
+        background: #1666a1;
+        transform: scale(1.1);
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -76,6 +97,10 @@ def call_api(url, method="GET", payload=None):
     except Exception as e:
         st.error(f"Error calling API: {str(e)}")
         return None
+
+# Initialize session state for chatbot
+if 'show_chatbot' not in st.session_state:
+    st.session_state.show_chatbot = False
 
 # App title and description
 st.markdown('<p class="main-header">💧 Roof Top Rain Water Harvesting Assessment Tool</p>', unsafe_allow_html=True)
@@ -168,6 +193,11 @@ with st.sidebar:
 
     st.markdown("---")
 
+    # Chatbot toggle in sidebar (as backup)
+    st.markdown("### 🤖 AI Assistant")
+    if st.button("Chat with AI Assistant", key="sidebar_chat"):
+        st.session_state.show_chatbot = not st.session_state.show_chatbot
+
 # Main content area
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["🏠 Assessment", "💡 Recommendations", "📊 Results", "🌊 Groundwater Info", "ℹ About"])
 
@@ -186,9 +216,6 @@ if submitted:
         
         # Call the API
         assessment_response = call_api(ASSESSMENTS_API_URL, "POST", assessment_payload)
-        
-        # Debug: Show what we received
-        st.write("API Response:", assessment_response)
         
         if assessment_response:
             # Handle both list response and single object response
@@ -611,102 +638,24 @@ with tab5:
     </div>
     """, unsafe_allow_html=True)
 
-# --- WORKING CHATBOT INTEGRATION ---
+# --- FINAL WORKING CHATBOT SOLUTION ---
 st.markdown("""
-<style>
-    .chatbot-container {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-    }
-    
-    .chatbot-fab {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: #1f77b4;
-        color: white;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        transition: all 0.3s ease;
-    }
-    
-    .chatbot-fab:hover {
-        background: #1666a1;
-        transform: scale(1.1);
-    }
-    
-    .chatbot-iframe {
-        position: fixed;
-        bottom: 90px;
-        right: 20px;
-        width: 380px;
-        height: 600px;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        z-index: 1001;
-        display: none;
-    }
-    
-    .close-chatbot {
-        position: fixed;
-        bottom: 700px;
-        right: 30px;
-        background: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 10px;
-        cursor: pointer;
-        z-index: 1002;
-        display: none;
-        font-size: 12px;
-        font-weight: bold;
-    }
-</style>
-
-<div class="chatbot-container">
-    <button class="chatbot-fab" onclick="openChatbot()">🤖</button>
+<div style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+    <button onclick="window.open('https://jal-rakshak-ai-v3.vercel.app/', '_blank')" 
+            style="width: 60px; height: 60px; border-radius: 50%; background: #1f77b4; color: white; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s ease;">
+        🤖
+    </button>
 </div>
-
-<iframe class="chatbot-iframe" id="chatbotFrame" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
-<button class="close-chatbot" id="closeChatbot" onclick="closeChatbot()">Close Chat</button>
-
-<script>
-function openChatbot() {
-    document.getElementById('chatbotFrame').style.display = 'block';
-    document.getElementById('closeChatbot').style.display = 'block';
-    document.querySelector('.chatbot-fab').style.display = 'none';
-}
-
-function closeChatbot() {
-    document.getElementById('chatbotFrame').style.display = 'none';
-    document.getElementById('closeChatbot').style.display = 'none';
-    document.querySelector('.chatbot-fab').style.display = 'block';
-}
-
-// Close chatbot when clicking outside
-document.addEventListener('click', function(event) {
-    const iframe = document.getElementById('chatbotFrame');
-    const fab = document.querySelector('.chatbot-fab');
-    const closeBtn = document.getElementById('closeChatbot');
-    
-    if (iframe.style.display === 'block') {
-        const isClickInsideIframe = event.target === iframe || iframe.contains(event.target);
-        const isClickOnClose = event.target === closeBtn || closeBtn.contains(event.target);
-        const isClickOnFab = event.target === fab || fab.contains(event.target);
-        
-        if (!isClickInsideIframe && !isClickOnClose && !isClickOnFab) {
-            closeChatbot();
-        }
-    }
-});
-</script>
 """, unsafe_allow_html=True)
+
+# Alternative chatbot that opens in the same page
+if st.session_state.show_chatbot:
+    st.markdown("---")
+    st.markdown("### 🤖 AI Assistant")
+    st.components.v1.iframe("https://jal-rakshak-ai-v3.vercel.app/", height=600, scrolling=True)
+    if st.button("Close Chatbot"):
+        st.session_state.show_chatbot = False
+        st.rerun()
 
 # Footer
 st.markdown("---")
@@ -724,10 +673,9 @@ if st.session_state.calculation_done and st.session_state.user_data['assessment_
     
     if st.sidebar.button("💾 Save Assessment Report"):
         with st.spinner("Generating report..."):
-            time.sleep(2)  # Simulate report generation
+            time.sleep(2)
             st.sidebar.success("Assessment saved successfully!")
             
-            # Simulate download link
             st.sidebar.download_button(
                 label="Download PDF Report",
                 data="Simulated PDF content would be here",
