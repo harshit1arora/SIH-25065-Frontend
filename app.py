@@ -574,7 +574,6 @@ with tab5:
 
 chatbot_html = """
 <style>
-  /* Floating button */
   #jal-chat-fab {
     position: fixed;
     bottom: 40px;
@@ -595,14 +594,13 @@ chatbot_html = """
   }
   #jal-chat-fab:hover { transform: scale(1.1); }
 
-  /* Chat iframe container - visible by default but hidden with visibility */
   #jal-chat-iframe-wrapper {
     position: fixed;
     bottom: 120px;
     right: 40px;
     z-index: 31000;
     flex-direction: column;
-    visibility: hidden;  /* invisible but takes space */
+    visibility: hidden;
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -637,7 +635,6 @@ chatbot_html = """
   }
 </style>
 
-<!-- Floating Chat Button -->
 <div id="jal-chat-fab" style="display:flex;" onclick="
     const wrapper = document.getElementById('jal-chat-iframe-wrapper');
     wrapper.classList.add('visible');
@@ -646,7 +643,6 @@ chatbot_html = """
   🤖
 </div>
 
-<!-- Chat Iframe with Close Button -->
 <div id="jal-chat-iframe-wrapper">
   <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
   <div id="close-btn-container">
@@ -660,6 +656,7 @@ chatbot_html = """
 """
 
 st.markdown(chatbot_html, unsafe_allow_html=True)
+
 
 # Footer
 st.markdown("---")
