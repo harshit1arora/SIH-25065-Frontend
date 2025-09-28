@@ -173,7 +173,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["🏠 Assessment", "💡 Recommendations
 
 if submitted:
     with st.spinner("Calculating your rainwater harvesting potential..."):
-        # Create assessment
+        # Create assessment payload
         assessment_payload = {
             "name": st.session_state.user_data['name'],
             "location": st.session_state.user_data['location'],
@@ -184,16 +184,30 @@ if submitted:
             "roof_age": st.session_state.user_data['roof_age']
         }
         
+        # Call the API
         assessment_response = call_api(ASSESSMENTS_API_URL, "POST", assessment_payload)
         
-        if assessment_response and 'id' in assessment_response:
-            st.session_state.user_data['assessment_id'] = assessment_response['id']
-            st.session_state.user_data['results'] = assessment_response
-            st.session_state.calculation_done = True
-            st.success("Assessment completed successfully!")
-            st.rerun()
+        # Debug: Show what we received
+        st.write("API Response:", assessment_response)
+        
+        if assessment_response:
+            # Handle both list response and single object response
+            if isinstance(assessment_response, list) and len(assessment_response) > 0:
+                # API returned a list - use the first item
+                st.session_state.user_data['results'] = assessment_response[0]
+                st.session_state.calculation_done = True
+                st.success("Assessment completed successfully!")
+                st.rerun()
+            elif isinstance(assessment_response, dict):
+                # API returned a single assessment object
+                st.session_state.user_data['results'] = assessment_response
+                st.session_state.calculation_done = True
+                st.success("Assessment completed successfully!")
+                st.rerun()
+            else:
+                st.error("Unexpected response format from API")
         else:
-            st.error("Failed to complete assessment. Please try again.")
+            st.error("API call failed. Please try again.")
 
 with tab1:
     st.markdown('<p class="sub-header">Rainwater Harvesting Potential Assessment</p>', unsafe_allow_html=True)
