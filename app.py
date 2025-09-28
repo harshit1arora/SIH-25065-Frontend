@@ -617,7 +617,7 @@ iframe_html = """
   #jal-chat-fab {
     position: fixed;
     bottom: 40px;
-    right: 8px; /* <-- Make this smaller for the furthest right */
+    right: 40px; /* <-- Make this smaller for the furthest right */
     width: 64px;
     height: 64px;
     z-index: 9999;
@@ -630,20 +630,26 @@ iframe_html = """
     justify-content: center;
     cursor: pointer;
     font-size: 2rem;
+    transition: transform 0.2s ease-in-out;
+  }
+  #jal-chat-fab:hover {
+    transform: scale(1.1);
   }
   #jal-chat-iframe-wrapper {
     display: none;
     position: fixed;
-    bottom: 100px;
-    right: 8px; /* <-- Match to FAB */
+    bottom: 120px;
+    right: 40px;
     z-index: 10000;
+    flex-direction: column;
   }
+  
   #jal-chat-iframe {
     width: 400px;
     height: 600px;
-    border: none;
+    border: 1px solid #ddd;
     border-radius: 18px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     background: white;
   }
   #close-btn {
@@ -668,9 +674,7 @@ iframe_html = """
   </div>
 </div>
 """
-
-components.html(iframe_html, height=700, width=440, scrolling=False)
-
+st.markdown(chatbot_html, unsafe_allow_html=True)
 
 
 # Footer
