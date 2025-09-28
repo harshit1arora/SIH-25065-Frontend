@@ -698,8 +698,133 @@ chatbot_html = """
 
 st.markdown(chatbot_html, unsafe_allow_html=True)
 
+chatbot_html = """
+<style>
+    /* Style for the floating action button (FAB) */
+    .chatbot-fab {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background: #1f77b4;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 24px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 1000;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .chatbot-fab:hover {
+        background: #1666a1;
+        transform: scale(1.1);
+    }
+    
+    /* Chatbot iframe container */
+    .chatbot-container {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 380px;
+        height: 600px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        z-index: 1001;
+        display: none;
+        flex-direction: column;
+        border: 1px solid #ddd;
+    }
+    
+    .chatbot-header {
+        background: #1f77b4;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 10px 10px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .chatbot-iframe {
+        flex: 1;
+        border: none;
+        border-radius: 0 0 10px 10px;
+    }
+    
+    .close-btn {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .close-btn:hover {
+        background: rgba(255,255,255,0.2);
+    }
+</style>
 
+<script>
+function toggleChatbot() {
+    const chatbot = document.getElementById('chatbotContainer');
+    const fab = document.getElementById('chatbotFab');
+    
+    if (chatbot.style.display === 'flex') {
+        chatbot.style.display = 'none';
+        fab.style.display = 'flex';
+    } else {
+        chatbot.style.display = 'flex';
+        fab.style.display = 'none';
+    }
+}
 
+// Close chatbot when clicking outside
+document.addEventListener('click', function(event) {
+    const chatbot = document.getElementById('chatbotContainer');
+    const fab = document.getElementById('chatbotFab');
+    
+    if (chatbot.style.display === 'flex') {
+        const isClickInsideChatbot = chatbot.contains(event.target);
+        const isClickOnFab = fab.contains(event.target);
+        
+        if (!isClickInsideChatbot && !isClickOnFab) {
+            chatbot.style.display = 'none';
+            fab.style.display = 'flex';
+        }
+    }
+});
+</script>
+
+<!-- Floating Action Button -->
+<button id="chatbotFab" class="chatbot-fab" onclick="toggleChatbot()">
+    🤖
+</button>
+
+<!-- Chatbot Container -->
+<div id="chatbotContainer" class="chatbot-container">
+    <div class="chatbot-header">
+        <span style="font-weight: bold;">Jal Rakshak AI Assistant</span>
+        <button class="close-btn" onclick="toggleChatbot()">×</button>
+    </div>
+    <iframe class="chatbot-iframe" src="https://jal-rakshak-ai-v3.vercel.app/" 
+            title="Jal Rakshak AI Chatbot"></iframe>
+</div>
+"""
+st.markdown(chatbot_html, unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
