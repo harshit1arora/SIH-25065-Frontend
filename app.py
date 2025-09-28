@@ -1,4 +1,3 @@
-this is my app.js code for frontend 
 import os
 import streamlit as st
 import requests
