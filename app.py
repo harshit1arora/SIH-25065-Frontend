@@ -1,3 +1,4 @@
+this is my app.js code for frontend 
 import os
 import streamlit as st
 import requests
@@ -8,7 +9,6 @@ import plotly.express as px
 from datetime import datetime
 import time
 import random
-import streamlit.components.v1 as components
 
 # Set page configuration
 st.set_page_config(
@@ -128,11 +128,14 @@ with st.sidebar:
         
         submitted = st.form_submit_button("🚀 Calculate Potential", type="primary")
 
+    # Add Google Earth measurement option
     # Add Google Earth measurement option OUTSIDE the form
     st.markdown("---")
     st.markdown("*Not sure about your roof area?*")
 
+    # Always show the button, but handle different states
     if st.session_state.user_data['location']:
+        # Check if we have results with coordinates
         if st.session_state.calculation_done and st.session_state.user_data['results']:
             results = st.session_state.user_data['results']
             lat = results.get('latitude')
@@ -140,6 +143,7 @@ with st.sidebar:
 
             if lat and lon:
                 earth_url = f"https://earth.google.com/web/@{lat},{lon},100a,1000d,35y,0h,0t,0r"
+                # Create a styled link that looks like a button
                 st.markdown(f"""
                 <a href="{earth_url}" target="_blank" style="
                     display: inline-block;
@@ -170,6 +174,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["🏠 Assessment", "💡 Recommendations
 
 if submitted:
     with st.spinner("Calculating your rainwater harvesting potential..."):
+        # Create assessment payload
         assessment_payload = {
             "name": st.session_state.user_data['name'],
             "location": st.session_state.user_data['location'],
@@ -180,20 +185,26 @@ if submitted:
             "roof_age": st.session_state.user_data['roof_age']
         }
         
+        # Call the API
         assessment_response = call_api(ASSESSMENTS_API_URL, "POST", assessment_payload)
         
+        # Debug: Show what we received
         st.write("API Response:", assessment_response)
         
         if assessment_response:
+            # Handle both list response and single object response
             if isinstance(assessment_response, list) and len(assessment_response) > 0:
+                # API returned a list - use the first item
                 st.session_state.user_data['results'] = assessment_response[0]
                 st.session_state.calculation_done = True
                 st.success("Assessment completed successfully!")
-                # Avoid automatic rerun to prevent loops
+                st.rerun()
             elif isinstance(assessment_response, dict):
+                # API returned a single assessment object
                 st.session_state.user_data['results'] = assessment_response
                 st.session_state.calculation_done = True
                 st.success("Assessment completed successfully!")
+                st.rerun()
             else:
                 st.error("Unexpected response format from API")
         else:
@@ -205,6 +216,7 @@ with tab1:
     if st.session_state.calculation_done and st.session_state.user_data['results']:
         results = st.session_state.user_data['results']
         
+        # Display key metrics
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
@@ -228,6 +240,7 @@ with tab1:
             st.metric("Payback Period", f"{results.get('payback_period', 0):.1f} years")
             st.markdown('</div>', unsafe_allow_html=True)
         
+        # Detailed results
         st.markdown("### Detailed Analysis")
         
         col1, col2 = st.columns(2)
@@ -239,10 +252,15 @@ with tab1:
             st.write(f"- Annual Rainfall: {results.get('annual_rainfall', 0):.0f} mm")
             st.write(f"- Harvestable Water: {results.get('annual_harvestable_water', 0):.0f} liters")
     
+            # Calculate Potential Savings based on household usage
             harvestable_water = results.get('annual_harvestable_water', 0) or 0
             dwellers = results.get('dwellers', 1)
+    
+            # Average water consumption per person per day (in liters)
             daily_consumption_per_person = 150
             annual_consumption = dwellers * daily_consumption_per_person * 365
+    
+            # Potential savings is the minimum of harvestable water and annual consumption
             potential_savings = min(harvestable_water, annual_consumption)
     
             st.write(f"- Potential Savings: {potential_savings:.0f} liters/year")
@@ -255,6 +273,7 @@ with tab1:
             st.write(f"- Aquifer Type: {results.get('aquifer_type', 'N/A')}")
             st.write(f"- Water Depth: {results.get('water_depth', 0):.1f} meters")
             
+            # Display coordinates and Google Earth link
             lat = results.get('latitude')
             lon = results.get('longitude')
             
@@ -265,21 +284,24 @@ with tab1:
             
             st.markdown('</div>', unsafe_allow_html=True)
         
+        # Add roof area update functionality
         if lat and lon:
             st.markdown("---")
             st.markdown("*Update open space after measurement*")
-            new_open_space = st.number_input("Enter measured open space (sq. meters):", 
+            new_roof_area = st.number_input("Enter measured open space (sq. meters):", 
                                            min_value=10, max_value=1000, 
                                            value=st.session_state.user_data['open_space'],
-                                           key="update_open_space")
+                                           key="update_roof")
             
             if st.button("Update Open Space", key="update_btn"):
-                st.session_state.user_data['open_space'] = new_open_space
-                st.success("Open space updated! Click 'Calculate Potential' again for updated results.")
+                st.session_state.user_data['open_space'] = new_roof_area
+                st.success("Roof area updated! Click 'Calculate Potential' again for updated results.")
         
+        # Rainfall visualization
         if 'monthly_breakdown' in results:
             st.markdown("### Monthly Rainfall Distribution")
             months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            
             fig = px.bar(x=months, y=results['monthly_breakdown'], 
                          labels={'x': 'Month', 'y': 'Rainfall (mm)'},
                          title="Monthly Rainfall Pattern")
@@ -292,6 +314,8 @@ with tab2:
     
     if st.session_state.calculation_done and st.session_state.user_data['results']:
         results = st.session_state.user_data['results']
+        
+        # Structure recommendations
         recommended_structure = results.get('recommended_structure')
         
         if recommended_structure:
@@ -310,15 +334,15 @@ with tab2:
             st.write(structure_descriptions.get(recommended_structure, "No description available."))
             st.markdown('</div>', unsafe_allow_html=True)
             
+            # Implementation details
             st.markdown("### Implementation Details")
             
             col1, col2 = st.columns(2)
             
             with col1:
                 st.markdown("*Cost Analysis*")
-                install_cost = results.get('installation_cost', 0)
-                st.write(f"- Estimated Installation Cost: ₹{install_cost:.0f}")
-                st.write(f"- Annual Maintenance Cost: ₹{install_cost * 0.05:.0f} (approx.)")
+                st.write(f"- Estimated Installation Cost: ₹{results.get('installation_cost', 0):.0f}")
+                st.write(f"- Annual Maintenance Cost: ₹{results.get('installation_cost', 0) * 0.05:.0f} (approx.)")
                 st.write(f"- Payback Period: {results.get('payback_period', 0):.1f} years")
                 
             with col2:
@@ -327,11 +351,13 @@ with tab2:
                 st.write(f"- Financial Savings: ₹{results.get('annual_harvestable_water', 0) * 0.005:.0f}/year (approx.)")
                 st.write(f"- Environmental Impact: Reduced groundwater extraction")
             
+            # Visual representation of savings
             st.markdown("### Cost-Benefit Analysis")
             
             years = list(range(1, 11))
+            installation_cost = results.get('installation_cost', 0)
             annual_savings = results.get('annual_harvestable_water', 0) * 0.005
-            cumulative_savings = [annual_savings * year - install_cost for year in years]
+            cumulative_savings = [annual_savings * year - installation_cost for year in years]
             
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=years, y=cumulative_savings, mode='lines+markers', name='Cumulative Savings'))
@@ -349,6 +375,7 @@ with tab3:
     if st.session_state.calculation_done and st.session_state.user_data['results']:
         results = st.session_state.user_data['results']
         
+        # Comprehensive results display
         col1, col2 = st.columns(2)
         
         with col1:
@@ -366,15 +393,18 @@ with tab3:
             water_df = pd.DataFrame(water_data)
             st.dataframe(water_df, hide_index=True, use_container_width=True)
             
+            # Water balance chart
             fig = px.pie(water_df, values='Volume (liters)', names='Component', 
                          title="Water Balance Distribution")
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
             st.markdown("### System Efficiency")
+            # Calculate efficiencies based on available results
             roof_type = results.get('roof_type', 'Concrete')
             roof_age = results.get('roof_age', 5)
 
+            # Collection Efficiency calculation based on roof type and age
             collection_efficiency_values = {
                 'Metal': 0.95,
                 'Concrete': 0.85,
@@ -385,16 +415,19 @@ with tab3:
             }
             base_collection_eff = collection_efficiency_values.get(roof_type, 0.80)
 
+            # Adjust for roof age (1% reduction per year, max 30% reduction)
             age_reduction = min(roof_age * 0.01, 0.30)
             collection_efficiency = max(0.5, base_collection_eff * (1 - age_reduction))
 
+            # Storage Efficiency calculation (based on roof area as proxy for storage size)
             roof_area = results.get('roof_area', 50)
+            # Larger systems typically have better storage efficiency
             if roof_area > 150:
-                storage_efficiency = 0.95
+                storage_efficiency = 0.95  # Large systems
             elif roof_area > 80:
-                storage_efficiency = 0.90
+                storage_efficiency = 0.90  # Medium systems
             else:
-                storage_efficiency = 0.85
+                storage_efficiency = 0.85  # Small systems
 
             efficiency_data = {
                 'Metric': ['Runoff Coefficient', 'Collection Efficiency', 'Storage Efficiency', 'Overall System Efficiency'],
@@ -410,6 +443,7 @@ with tab3:
             efficiency_df = pd.DataFrame(efficiency_data)
             st.dataframe(efficiency_df, hide_index=True, use_container_width=True)
             
+            # Efficiency gauge chart
             fig = go.Figure(go.Indicator(
                 mode = "gauge+number",
                 value = results.get('runoff_coefficient', 0) * 100,
@@ -424,6 +458,7 @@ with tab3:
             ))
             st.plotly_chart(fig, use_container_width=True)
         
+        # Additional technical details
         st.markdown("### Technical Specifications")
         
         tech_col1, tech_col2, tech_col3 = st.columns(3)
@@ -455,6 +490,7 @@ with tab4:
     if st.session_state.calculation_done and st.session_state.user_data['results']:
         results = st.session_state.user_data['results']
         
+        # Groundwater information
         col1, col2 = st.columns(2)
         
         with col1:
@@ -478,6 +514,7 @@ with tab4:
         with col2:
             st.markdown("### Water Level Trends")
             
+            # Simulated water level data
             years = [2018, 2019, 2020, 2021, 2022, 2023]
             water_levels = [15.2, 15.8, 16.5, 17.2, 17.8, 18.5]
             
@@ -490,6 +527,7 @@ with tab4:
             
             st.warning("Water table is declining at approximately 0.7m per year. Rainwater harvesting is strongly recommended.")
         
+        # Conservation impact
         st.markdown("### Environmental Impact")
 
         harvestable_water = results.get('annual_harvestable_water', 0)
@@ -497,13 +535,15 @@ with tab4:
         impact_col1, impact_col2, impact_col3 = st.columns(3)
         
         with impact_col1:
-            st.metric("Groundwater Recharge Potential", f"{harvestable_water * 0.7:.0f} liters/year")
+            st.metric("Groundwater Recharge Potential", f"{results.get('annual_harvestable_water', 0) * 0.7:.0f} liters/year")
         
         with impact_col2:
+            # Random value between 0.8-1.5 tons based on harvestable water
             co2_reduction = (harvestable_water / 50000) * random.uniform(0.8, 1.5) if harvestable_water else 0
             st.metric("CO2 Reduction", f"{co2_reduction:.1f} tons/year")
         
         with impact_col3:
+            # Random value between 600-1200 kWh based on harvestable water
             energy_savings = (harvestable_water / 40000) * random.uniform(600, 1200) if harvestable_water else 0
             st.metric("Energy Savings", f"{energy_savings:.0f} kWh/year")
     
@@ -571,18 +611,19 @@ with tab5:
     <p>Always check local regulations and obtain necessary permits before implementing any rainwater harvesting system.</p>
     </div>
     """, unsafe_allow_html=True)
+import streamlit.components.v1 as components
 
-chatbot_html = """
+iframe_html = """
 <style>
   #jal-chat-fab {
     position: fixed;
     bottom: 40px;
-    right: 40px;
+    right: 40px; /* <-- Make this smaller for the furthest right */
     width: 64px;
     height: 64px;
-    z-index: 30000;
+    z-index: 9999;
     background: #2563eb;
-    color: white;
+    color: #fff;
     border-radius: 50%;
     box-shadow: 0 4px 16px rgba(0,0,0,0.24);
     display: flex;
@@ -590,72 +631,47 @@ chatbot_html = """
     justify-content: center;
     cursor: pointer;
     font-size: 2rem;
-    transition: transform 0.2s ease-in-out;
   }
-  #jal-chat-fab:hover { transform: scale(1.1); }
-
   #jal-chat-iframe-wrapper {
+    display: none;
     position: fixed;
-    bottom: 120px;
-    right: 40px;
-    z-index: 31000;
-    flex-direction: column;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    bottom: 100px;
+    right: 48px; /* <-- Match to FAB */
+    z-index: 10000;
   }
-  #jal-chat-iframe-wrapper.visible {
-    visibility: visible;
-    opacity: 1;
-  }
-
   #jal-chat-iframe {
     width: 400px;
     height: 600px;
     border: none;
     border-radius: 18px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
     background: white;
   }
-
-  #close-btn-container {
+  #close-btn {
     text-align: right;
-    padding-top: 8px;
+    margin-top: 6px;
   }
-
-  #close-btn-container button {
-    background: #ef4444;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 14px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  #close-btn button {
+    background:#ef4444;
+    color:white;
+    border:none;
+    border-radius:6px;
+    padding:4px 12px;
+    font-weight:bold;
+    cursor:pointer;
   }
 </style>
-
-<div id="jal-chat-fab" style="display:flex;" onclick="
-    const wrapper = document.getElementById('jal-chat-iframe-wrapper');
-    wrapper.classList.add('visible');
-    this.style.display='none';
-">
-  🤖
-</div>
-
+<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">🤖</div>
 <div id="jal-chat-iframe-wrapper">
   <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
-  <div id="close-btn-container">
-    <button onclick="
-      const wrapper = document.getElementById('jal-chat-iframe-wrapper');
-      wrapper.classList.remove('visible');
-      document.getElementById('jal-chat-fab').style.display = 'flex';
-    ">Close</button>
+  <div id="close-btn">
+    <button onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
   </div>
 </div>
 """
 
-st.markdown(chatbot_html, unsafe_allow_html=True)
+components.html(iframe_html, height=700, width=440, scrolling=False)
+
 
 
 # Footer
@@ -668,7 +684,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Save assessment functionality
-if st.session_state.calculation_done and st.session_state.user_data.get('assessment_id'):
+if st.session_state.calculation_done and st.session_state.user_data['assessment_id']:
     st.sidebar.markdown("---")
     st.sidebar.markdown("### Save Your Assessment")
     
@@ -677,6 +693,7 @@ if st.session_state.calculation_done and st.session_state.user_data.get('assessm
             time.sleep(2)  # Simulate report generation
             st.sidebar.success("Assessment saved successfully!")
             
+            # Simulate download link
             st.sidebar.download_button(
                 label="Download PDF Report",
                 data="Simulated PDF content would be here",
