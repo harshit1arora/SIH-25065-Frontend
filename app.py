@@ -1,4 +1,3 @@
-# this is my app.js code for frontend 
 import os
 import streamlit as st
 import requests
@@ -615,89 +614,6 @@ with tab5:
 
 # --- Chatbot Integration using st.markdown ---
 # --- Chatbot Integration (Final Version) ---
-chatbot_html = """
-<style>
-  /* Style for the floating action button (FAB) */
-  #jal-chat-fab {
-    position: fixed;
-    bottom: 40px;
-    right: 40px; /* Position from the right edge of the window */
-    width: 64px;
-    height: 64px;
-    z-index: 9999;
-    background: #2563eb;
-    color: #fff;
-    border-radius: 50%;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.24);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 2rem;
-    transition: transform 0.2s ease-in-out;
-  }
-  #jal-chat-fab:hover {
-    transform: scale(1.1);
-  }
-
-  /* Style for the iframe container when the chat is open */
-  #jal-chat-iframe-wrapper {
-    display: none; /* Hidden by default */
-    position: fixed;
-    bottom: 120px;
-    right: 40px; /* Match the FAB's right position */
-    z-index: 10000;
-    flex-direction: column;
-  }
-
-  #jal-chat-iframe {
-    width: 400px;
-    height: 600px;
-    border: 1px solid #ddd;
-    border-radius: 18px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-    background: white;
-  }
-
-  #close-btn-container {
-    text-align: right;
-    padding-top: 8px;
-  }
-
-  #close-btn-container button {
-    background:#ef4444;
-    color:white;
-    border:none;
-    border-radius:6px;
-    padding: 6px 14px;
-    font-weight:bold;
-    cursor:pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
-</style>
-
-<div id="jal-chat-fab" onclick="
-    document.getElementById('jal-chat-iframe-wrapper').style.display='flex';
-    this.style.display='none';
-">
-    🤖
-</div>
-
-<div id="jal-chat-iframe-wrapper">
-  <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
-  <div id="close-btn-container">
-    <button onclick="
-        document.getElementById('jal-chat-iframe-wrapper').style.display='none';
-        document.getElementById('jal-chat-fab').style.display='flex';
-    ">
-        Close
-    </button>
-  </div>
-</div>
-"""
-
-st.markdown(chatbot_html, unsafe_allow_html=True)
-
 chatbot_html = """
 <style>
     /* Style for the floating action button (FAB) */
