@@ -614,11 +614,10 @@ import streamlit.components.v1 as components
 
 iframe_html = """
 <style>
-  /* Floating chat button */
   #jal-chat-fab {
     position: fixed;
     bottom: 40px;
-    right: 60px;
+    right: 8px; /* <-- Make this smaller for the furthest right */
     width: 64px;
     height: 64px;
     z-index: 9999;
@@ -632,15 +631,13 @@ iframe_html = """
     cursor: pointer;
     font-size: 2rem;
   }
-  /* Chat iframe container, hidden by default */
   #jal-chat-iframe-wrapper {
     display: none;
     position: fixed;
     bottom: 100px;
-    right: 32px;
+    right: 8px; /* <-- Match to FAB */
     z-index: 10000;
   }
-  /* The chat iframe styling */
   #jal-chat-iframe {
     width: 400px;
     height: 600px;
@@ -649,7 +646,6 @@ iframe_html = """
     box-shadow: 0 2px 16px rgba(0,0,0,0.3);
     background: white;
   }
-  /* Close button for chat popup */
   #close-btn {
     text-align: right;
     margin-top: 6px;
@@ -676,11 +672,12 @@ iframe_html = """
 components.html(iframe_html, height=700, width=440, scrolling=False)
 
 
+
 # Footer
 st.markdown("---")
 st.markdown("""
 <footer>
-    <p>Developed for sustainable water management | © 2025 Team Vrun Ventures</p>
+    <p>Developed for sustainable water management | © 2025 Team Varun Ventures</p>
     <p>For technical support: [support@rwhindia.org](mailto:support@rwhindia.org) | Phone: +91-9876543210</p>
 </footer>
 """, unsafe_allow_html=True)
