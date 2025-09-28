@@ -8,6 +8,7 @@ import plotly.express as px
 from datetime import datetime
 import time
 import random
+import streamlit.components.v1 as components
 
 # Set page configuration
 st.set_page_config(
@@ -128,7 +129,6 @@ with st.sidebar:
         submitted = st.form_submit_button("🚀 Calculate Potential", type="primary")
 
     # Add Google Earth measurement option
-    # Add Google Earth measurement option OUTSIDE the form
     st.markdown("---")
     st.markdown("Not sure about your roof area?")
 
@@ -610,134 +610,110 @@ with tab5:
     <p>Always check local regulations and obtain necessary permits before implementing any rainwater harvesting system.</p>
     </div>
     """, unsafe_allow_html=True)
-# ADD THIS CORRECTED BLOCK AT THE VERY END OF YOUR SCRIPT
 
-# --- Chatbot Integration using st.markdown ---
-# --- Chatbot Integration (Fixed Version) ---
-import streamlit.components.v1 as components
-
-# Chatbot component using components.html for better isolation
-chatbot_component = """
-<div id="chatbot-container">
-    <style>
-        /* Floating Action Button */
-        #chat-fab {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: #1f77b4;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 24px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            z-index: 9999;
-            border: none;
-            transition: all 0.3s ease;
-        }
-        
-        #chat-fab:hover {
-            background: #1666a1;
-            transform: scale(1.1);
-        }
-        
-        /* Chatbot Iframe */
-        #chat-iframe {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 380px;
-            height: 600px;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 10000;
-            display: none;
-            background: white;
-        }
-        
-        /* Close Button */
-        #close-chat {
-            position: fixed;
-            bottom: 700px;
-            right: 30px;
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            z-index: 10001;
-            display: none;
-            font-size: 12px;
-            font-weight: bold;
-        }
-    </style>
-
-    <!-- Floating Action Button -->
-    <button id="chat-fab" onclick="openChat()">🤖</button>
+# --- WORKING CHATBOT INTEGRATION ---
+st.markdown("""
+<style>
+    .chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
     
-    <!-- Close Button -->
-    <button id="close-chat" onclick="closeChat()">Close</button>
+    .chatbot-fab {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #1f77b4;
+        color: white;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
     
-    <!-- Chatbot Iframe -->
-    <iframe id="chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
+    .chatbot-fab:hover {
+        background: #1666a1;
+        transform: scale(1.1);
+    }
+    
+    .chatbot-iframe {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 380px;
+        height: 600px;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        z-index: 1001;
+        display: none;
+    }
+    
+    .close-chatbot {
+        position: fixed;
+        bottom: 700px;
+        right: 30px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        z-index: 1002;
+        display: none;
+        font-size: 12px;
+        font-weight: bold;
+    }
+</style>
 
-    <script>
-        function openChat() {
-            document.getElementById('chat-iframe').style.display = 'block';
-            document.getElementById('close-chat').style.display = 'block';
-            document.getElementById('chat-fab').style.display = 'none';
-        }
-        
-        function closeChat() {
-            document.getElementById('chat-iframe').style.display = 'none';
-            document.getElementById('close-chat').style.display = 'none';
-            document.getElementById('chat-fab').style.display = 'flex';
-        }
-        
-        // Close chat when clicking outside
-        document.addEventListener('click', function(event) {
-            const iframe = document.getElementById('chat-iframe');
-            const fab = document.getElementById('chat-fab');
-            const closeBtn = document.getElementById('close-chat');
-            
-            if (iframe.style.display === 'block') {
-                const isClickInsideIframe = event.target === iframe || iframe.contains(event.target);
-                const isClickOnClose = event.target === closeBtn || closeBtn.contains(event.target);
-                const isClickOnFab = event.target === fab || fab.contains(event.target);
-                
-                if (!isClickInsideIframe && !isClickOnClose && !isClickOnFab) {
-                    closeChat();
-                }
-            }
-        });
-    </script>
+<div class="chatbot-container">
+    <button class="chatbot-fab" onclick="openChatbot()">🤖</button>
 </div>
-"""
 
-# Inject the chatbot component
-components.html(chatbot_component, height=0)  # height=0 makes it invisible, we're just injecting the HTML
+<iframe class="chatbot-iframe" id="chatbotFrame" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
+<button class="close-chatbot" id="closeChatbot" onclick="closeChatbot()">Close Chat</button>
 
-# Footer
-st.markdown("---")
-st.markdown("""
-<footer>
-    <p>Developed for sustainable water management | © 2025 Team Varun Ventures</p>
-    <p>For technical support: [support@rwhindia.org](mailto:support@rwhindia.org) | Phone: +91-9876543210</p>
-</footer>
+<script>
+function openChatbot() {
+    document.getElementById('chatbotFrame').style.display = 'block';
+    document.getElementById('closeChatbot').style.display = 'block';
+    document.querySelector('.chatbot-fab').style.display = 'none';
+}
+
+function closeChatbot() {
+    document.getElementById('chatbotFrame').style.display = 'none';
+    document.getElementById('closeChatbot').style.display = 'none';
+    document.querySelector('.chatbot-fab').style.display = 'block';
+}
+
+// Close chatbot when clicking outside
+document.addEventListener('click', function(event) {
+    const iframe = document.getElementById('chatbotFrame');
+    const fab = document.querySelector('.chatbot-fab');
+    const closeBtn = document.getElementById('closeChatbot');
+    
+    if (iframe.style.display === 'block') {
+        const isClickInsideIframe = event.target === iframe || iframe.contains(event.target);
+        const isClickOnClose = event.target === closeBtn || closeBtn.contains(event.target);
+        const isClickOnFab = event.target === fab || fab.contains(event.target);
+        
+        if (!isClickInsideIframe && !isClickOnClose && !isClickOnFab) {
+            closeChatbot();
+        }
+    }
+});
+</script>
 """, unsafe_allow_html=True)
+
 # Footer
 st.markdown("---")
 st.markdown("""
 <footer>
     <p>Developed for sustainable water management | © 2025 Team Varun Ventures</p>
-    <p>For technical support: [support@rwhindia.org](mailto:support@rwhindia.org) | Phone: +91-9876543210</p>
+    <p>For technical support: <a href="mailto:support@rwhindia.org">support@rwhindia.org</a> | Phone: +91-9876543210</p>
 </footer>
 """, unsafe_allow_html=True)
 
