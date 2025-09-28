@@ -43,78 +43,6 @@ st.markdown("""
         background-color: #1666a1;
         color: white;
     }
-    
-    /* Chat widget styling - FIXED POSITIONING */
-    .chat-fab {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 60px;
-        height: 60px;
-        z-index: 10000;
-        background: #2563eb;
-        color: #fff;
-        border-radius: 50%;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 1.8rem;
-        border: none;
-        transition: all 0.3s ease;
-    }
-    
-    .chat-fab:hover {
-        transform: scale(1.1);
-        background: #1d4ed8;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-    }
-    
-    .chat-iframe-wrapper {
-        position: fixed;
-        bottom: 90px;
-        right: 20px;
-        z-index: 10001;
-        width: 380px;
-        height: 580px;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        background: white;
-        display: none;
-        overflow: hidden;
-        border: 2px solid #e5e7eb;
-    }
-    
-    .chat-iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        border-radius: 12px;
-    }
-    
-    .close-btn {
-        position: absolute;
-        top: -40px;
-        right: 0;
-        z-index: 10002;
-    }
-    
-    .close-btn button {
-        background: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 6px 14px;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 0.8rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    
-    .close-btn button:hover {
-        background: #dc2626;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -200,10 +128,13 @@ with st.sidebar:
         submitted = st.form_submit_button("🚀 Calculate Potential", type="primary")
 
     # Add Google Earth measurement option
+    # Add Google Earth measurement option OUTSIDE the form
     st.markdown("---")
     st.markdown("**Not sure about your roof area?**")
 
+    # Always show the button, but handle different states
     if st.session_state.user_data['location']:
+        # Check if we have results with coordinates
         if st.session_state.calculation_done and st.session_state.user_data['results']:
             results = st.session_state.user_data['results']
             lat = results.get('latitude')
@@ -211,6 +142,7 @@ with st.sidebar:
 
             if lat and lon:
                 earth_url = f"https://earth.google.com/web/@{lat},{lon},100a,1000d,35y,0h,0t,0r"
+                # Create a styled link that looks like a button
                 st.markdown(f"""
                 <a href="{earth_url}" target="_blank" style="
                     display: inline-block;
@@ -255,13 +187,19 @@ if submitted:
         # Call the API
         assessment_response = call_api(ASSESSMENTS_API_URL, "POST", assessment_payload)
         
+        # Debug: Show what we received
+        st.write("API Response:", assessment_response)
+        
         if assessment_response:
+            # Handle both list response and single object response
             if isinstance(assessment_response, list) and len(assessment_response) > 0:
+                # API returned a list - use the first item
                 st.session_state.user_data['results'] = assessment_response[0]
                 st.session_state.calculation_done = True
                 st.success("Assessment completed successfully!")
                 st.rerun()
             elif isinstance(assessment_response, dict):
+                # API returned a single assessment object
                 st.session_state.user_data['results'] = assessment_response
                 st.session_state.calculation_done = True
                 st.success("Assessment completed successfully!")
@@ -313,10 +251,15 @@ with tab1:
             st.write(f"- Annual Rainfall: {results.get('annual_rainfall', 0):.0f} mm")
             st.write(f"- Harvestable Water: {results.get('annual_harvestable_water', 0):.0f} liters")
     
+            # Calculate Potential Savings based on household usage
             harvestable_water = results.get('annual_harvestable_water', 0) or 0
             dwellers = results.get('dwellers', 1)
+    
+            # Average water consumption per person per day (in liters)
             daily_consumption_per_person = 150
             annual_consumption = dwellers * daily_consumption_per_person * 365
+    
+            # Potential savings is the minimum of harvestable water and annual consumption
             potential_savings = min(harvestable_water, annual_consumption)
     
             st.write(f"- Potential Savings: {potential_savings:.0f} liters/year")
@@ -329,6 +272,7 @@ with tab1:
             st.write(f"- Aquifer Type: {results.get('aquifer_type', 'N/A')}")
             st.write(f"- Water Depth: {results.get('water_depth', 0):.1f} meters")
             
+            # Display coordinates and Google Earth link
             lat = results.get('latitude')
             lon = results.get('longitude')
             
@@ -455,29 +399,34 @@ with tab3:
         
         with col2:
             st.markdown("### System Efficiency")
-            
+            # Calculate efficiencies based on available results
             roof_type = results.get('roof_type', 'Concrete')
             roof_age = results.get('roof_age', 5)
 
+            # Collection Efficiency calculation based on roof type and age
             collection_efficiency_values = {
                 'Metal': 0.95,
                 'Concrete': 0.85,
-                'Tiled': 0.80,
-                'Asbestos': 0.75,
-                'Thatched': 0.50
+                'Tile': 0.80,
+                'Asphalt': 0.75,
+                'Green': 0.60,
+                'Thatch': 0.50
             }
             base_collection_eff = collection_efficiency_values.get(roof_type, 0.80)
 
+            # Adjust for roof age (1% reduction per year, max 30% reduction)
             age_reduction = min(roof_age * 0.01, 0.30)
             collection_efficiency = max(0.5, base_collection_eff * (1 - age_reduction))
 
+            # Storage Efficiency calculation (based on roof area as proxy for storage size)
             roof_area = results.get('roof_area', 50)
+            # Larger systems typically have better storage efficiency
             if roof_area > 150:
-                storage_efficiency = 0.95
+                storage_efficiency = 0.95  # Large systems
             elif roof_area > 80:
-                storage_efficiency = 0.90
+                storage_efficiency = 0.90  # Medium systems
             else:
-                storage_efficiency = 0.85
+                storage_efficiency = 0.85  # Small systems
 
             efficiency_data = {
                 'Metric': ['Runoff Coefficient', 'Collection Efficiency', 'Storage Efficiency', 'Overall System Efficiency'],
@@ -588,10 +537,12 @@ with tab4:
             st.metric("Groundwater Recharge Potential", f"{results.get('annual_harvestable_water', 0) * 0.7:.0f} liters/year")
         
         with impact_col2:
+            # Random value between 0.8-1.5 tons based on harvestable water
             co2_reduction = (harvestable_water / 50000) * random.uniform(0.8, 1.5) if harvestable_water else 0
             st.metric("CO2 Reduction", f"{co2_reduction:.1f} tons/year")
         
         with impact_col3:
+            # Random value between 600-1200 kWh based on harvestable water
             energy_savings = (harvestable_water / 40000) * random.uniform(600, 1200) if harvestable_water else 0
             st.metric("Energy Savings", f"{energy_savings:.0f} kWh/year")
     
@@ -659,55 +610,68 @@ with tab5:
     <p>Always check local regulations and obtain necessary permits before implementing any rainwater harvesting system.</p>
     </div>
     """, unsafe_allow_html=True)
+import streamlit.components.v1 as components
 
-# Chat widget - IMPROVED VERSION with better positioning
-chat_html = """
-<script>
-function toggleChat() {
-    var iframeWrapper = document.getElementById('jal-chat-iframe-wrapper');
-    var fab = document.getElementById('jal-chat-fab');
-    if (iframeWrapper.style.display === 'block') {
-        iframeWrapper.style.display = 'none';
-        fab.style.display = 'flex';
-    } else {
-        iframeWrapper.style.display = 'block';
-        fab.style.display = 'none';
-    }
-}
-
-function closeChat() {
-    document.getElementById('jal-chat-iframe-wrapper').style.display = 'none';
-    document.getElementById('jal-chat-fab').style.display = 'flex';
-}
-
-// Close chat when clicking outside
-document.addEventListener('click', function(event) {
-    var iframeWrapper = document.getElementById('jal-chat-iframe-wrapper');
-    var fab = document.getElementById('jal-chat-fab');
-    var iframe = document.getElementById('jal-chat-iframe');
-    
-    if (iframeWrapper.style.display === 'block') {
-        // Check if click is outside the chat and not on the FAB
-        if (!iframeWrapper.contains(event.target) && event.target !== fab) {
-            iframeWrapper.style.display = 'none';
-            fab.style.display = 'flex';
-        }
-    }
-});
-</script>
-
-<div id="jal-chat-fab" class="chat-fab" onclick="toggleChat()">🤖</div>
-<div id="jal-chat-iframe-wrapper" class="chat-iframe-wrapper">
-    <iframe id="jal-chat-iframe" class="chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
-    <div class="close-btn">
-        <button onclick="closeChat()">Close</button>
-    </div>
+iframe_html = """
+<style>
+  #jal-chat-fab {
+    position: fixed;
+    bottom: 40px;
+    right: 8px; /* <-- Make this smaller for the furthest right */
+    width: 64px;
+    height: 64px;
+    z-index: 9999;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.24);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2rem;
+  }
+  #jal-chat-iframe-wrapper {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 8px; /* <-- Match to FAB */
+    z-index: 10000;
+  }
+  #jal-chat-iframe {
+    width: 400px;
+    height: 600px;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    background: white;
+  }
+  #close-btn {
+    text-align: right;
+    margin-top: 6px;
+  }
+  #close-btn button {
+    background:#ef4444;
+    color:white;
+    border:none;
+    border-radius:6px;
+    padding:4px 12px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+</style>
+<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">🤖</div>
+<div id="jal-chat-iframe-wrapper">
+  <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
+  <div id="close-btn">
+    <button onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
+  </div>
 </div>
 """
 
-# Use components.html for the chat widget
-import streamlit.components.v1 as components
-components.html(chat_html, height=650)
+components.html(iframe_html, height=700, width=440, scrolling=False)
+
+
 
 # Footer
 st.markdown("---")
@@ -725,9 +689,10 @@ if st.session_state.calculation_done and st.session_state.user_data['assessment_
     
     if st.sidebar.button("💾 Save Assessment Report"):
         with st.spinner("Generating report..."):
-            time.sleep(2)
+            time.sleep(2)  # Simulate report generation
             st.sidebar.success("Assessment saved successfully!")
             
+            # Simulate download link
             st.sidebar.download_button(
                 label="Download PDF Report",
                 data="Simulated PDF content would be here",
