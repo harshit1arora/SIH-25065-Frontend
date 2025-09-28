@@ -572,12 +572,13 @@ with tab5:
     </div>
     """, unsafe_allow_html=True)
 
-iframe_html = """
+chatbot_html = """
 <style>
+  /* Style for the floating action button (FAB) */
   #jal-chat-fab {
     position: fixed;
     bottom: 40px;
-    right: 40px;
+    right: 40px; /* Position from the right edge of the window */
     width: 64px;
     height: 64px;
     z-index: 9999;
@@ -595,15 +596,17 @@ iframe_html = """
   #jal-chat-fab:hover {
     transform: scale(1.1);
   }
+
+  /* Style for the iframe container when the chat is open */
   #jal-chat-iframe-wrapper {
-    display: none;
+    display: none; /* Hidden by default */
     position: fixed;
     bottom: 120px;
-    right: 40px;
+    right: 40px; /* Match the FAB's right position */
     z-index: 10000;
     flex-direction: column;
   }
-  
+
   #jal-chat-iframe {
     width: 400px;
     height: 600px;
@@ -612,30 +615,46 @@ iframe_html = """
     box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     background: white;
   }
-  #close-btn {
+
+  #close-btn-container {
     text-align: right;
-    margin-top: 6px;
+    padding-top: 8px;
   }
-  #close-btn button {
+
+  #close-btn-container button {
     background:#ef4444;
     color:white;
     border:none;
     border-radius:6px;
-    padding:4px 12px;
+    padding: 6px 14px;
     font-weight:bold;
     cursor:pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
 </style>
-<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">🤖</div>
+
+<div id="jal-chat-fab" onclick="
+    document.getElementById('jal-chat-iframe-wrapper').style.display='flex';
+    this.style.display='none';
+">
+    🤖
+</div>
+
 <div id="jal-chat-iframe-wrapper">
   <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
-  <div id="close-btn">
-    <button onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
+  <div id="close-btn-container">
+    <button onclick="
+        document.getElementById('jal-chat-iframe-wrapper').style.display='none';
+        document.getElementById('jal-chat-fab').style.display='flex';
+    ">
+        Close
+    </button>
   </div>
 </div>
 """
 
-components.html(iframe_html, height=700, width=440, scrolling=False)
+st.markdown(chatbot_html, unsafe_allow_html=True)
+
 
 # Footer
 st.markdown("---")
