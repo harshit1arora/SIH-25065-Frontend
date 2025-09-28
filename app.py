@@ -612,67 +612,30 @@ with tab5:
     """, unsafe_allow_html=True)
 import streamlit.components.v1 as components
 
+# Example iframe (you can replace with your own HTML/animation/map)
 iframe_html = """
 <style>
-  #jal-chat-fab {
-    position: fixed;
-    bottom: 40px;
-    right: 8px; /* <-- Make this smaller for the furthest right */
-    width: 64px;
-    height: 64px;
-    z-index: 9999;
-    background: #2563eb;
-    color: #fff;
-    border-radius: 50%;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.24);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 2rem;
-  }
-  #jal-chat-iframe-wrapper {
-    display: none;
-    position: fixed;
-    bottom: 100px;
-    right: 8px; /* <-- Match to FAB */
-    z-index: 10000;
-  }
-  #jal-chat-iframe {
-    width: 400px;
-    height: 600px;
+.iframe-container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.iframe-container iframe {
+    width: 100%;
+    height: 100%;
     border: none;
-    border-radius: 18px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
-    background: white;
-  }
-  #close-btn {
-    text-align: right;
-    margin-top: 6px;
-  }
-  #close-btn button {
-    background:#ef4444;
-    color:white;
-    border:none;
-    border-radius:6px;
-    padding:4px 12px;
-    font-weight:bold;
-    cursor:pointer;
-  }
+}
 </style>
-<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">🤖</div>
-<div id="jal-chat-iframe-wrapper">
-  <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
-  <div id="close-btn">
-    <button onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
-  </div>
+
+<div class="iframe-container">
+    <iframe src="https://www.openstreetmap.org/export/embed.html"></iframe>
 </div>
 """
 
-components.html(iframe_html, height=700, width=440, scrolling=False)
-
-
-
+components.html(iframe_html, height=520, scrolling=True)
 # Footer
 st.markdown("---")
 st.markdown("""
