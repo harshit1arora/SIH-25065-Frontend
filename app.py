@@ -612,12 +612,16 @@ with tab5:
     """, unsafe_allow_html=True)
 import streamlit.components.v1 as components
 
-iframe_html = """
+# URL of your chatbot deployed on Vercel
+vercel_chatbot_url = "https://jal-rakshak-ai-v3.vercel.app/"
+
+# Chatbot redirect button HTML + JS
+chatbot_button_html = f"""
 <style>
-  #jal-chat-fab {
+  .chatbot-btn {{
     position: fixed;
     bottom: 40px;
-    right: 40px; /* <-- Make this smaller for the furthest right */
+    right: 40px;
     width: 64px;
     height: 64px;
     z-index: 30000;
@@ -625,54 +629,29 @@ iframe_html = """
     color: #fff;
     border-radius: 50%;
     box-shadow: 0 4px 16px rgba(0,0,0,0.24);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    line-height: 64px;
     cursor: pointer;
-    font-size: 2rem;
-    pointer-events: auto;
-  }
-  #jal-chat-iframe-wrapper {
-    display: none;
-    position: fixed;
-    bottom: 144px;
-    right: 40px; /* <-- Match to FAB */
-    z-index: 31000;
-    pointer-events: none;
-  }
-  #jal-chat-iframe {
-    width: 400px;
-    height: 600px;
-    border: none;
-    border-radius: 18px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
-    background: white;
-    display: block;
-  }
-  #close-btn {
-    text-align: right;
-    margin-top: 6px;
-  }
-  #close-btn button {
-    background:#ef4444;
-    color:white;
-    border:none;
-    border-radius:6px;
-    padding:4px 12px;
-    font-weight:bold;
-    cursor:pointer;
-  }
+    user-select: none;
+  }}
+  .chatbot-btn:hover {{
+    background: #1a4db3;
+  }}
 </style>
-<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='flex'; this.style.display='none';">🤖</div>
-<div id="jal-chat-iframe-wrapper">
-  <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
-  <div id="close-btn">
-    <button onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
-  </div>
+<div
+  class="chatbot-btn"
+  title="Open Chatbot"
+  onclick="window.open('{vercel_chatbot_url}', '_blank')"
+>
+  🤖
 </div>
 """
 
-components.html(iframe_html, height=700, width=440, scrolling=False)
+# Render the chatbot redirect button instead of iframe
+components.html(chatbot_button_html, height=90)
+
 
 
 
