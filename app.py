@@ -1,3 +1,4 @@
+# this is my app.js code for frontend 
 import os
 import streamlit as st
 import requests
@@ -130,7 +131,7 @@ with st.sidebar:
     # Add Google Earth measurement option
     # Add Google Earth measurement option OUTSIDE the form
     st.markdown("---")
-    st.markdown("*Not sure about your roof area?*")
+    st.markdown("Not sure about your roof area?")
 
     # Always show the button, but handle different states
     if st.session_state.user_data['location']:
@@ -246,7 +247,7 @@ with tab1:
         
         with col1:
             st.markdown('<div class="result-box">', unsafe_allow_html=True)
-            st.markdown("*Water Harvesting Potential*")
+            st.markdown("Water Harvesting Potential")
             st.write(f"- Runoff Coefficient: {results.get('runoff_coefficient', 0):.2f}")
             st.write(f"- Annual Rainfall: {results.get('annual_rainfall', 0):.0f} mm")
             st.write(f"- Harvestable Water: {results.get('annual_harvestable_water', 0):.0f} liters")
@@ -267,7 +268,7 @@ with tab1:
         
         with col2:
             st.markdown('<div class="result-box">', unsafe_allow_html=True)
-            st.markdown("*Site Characteristics*")
+            st.markdown("Site Characteristics")
             st.write(f"- Soil Type: {results.get('soil_type', 'N/A')}")
             st.write(f"- Aquifer Type: {results.get('aquifer_type', 'N/A')}")
             st.write(f"- Water Depth: {results.get('water_depth', 0):.1f} meters")
@@ -286,7 +287,7 @@ with tab1:
         # Add roof area update functionality
         if lat and lon:
             st.markdown("---")
-            st.markdown("*Update open space after measurement*")
+            st.markdown("Update open space after measurement")
             new_roof_area = st.number_input("Enter measured open space (sq. meters):", 
                                            min_value=10, max_value=1000, 
                                            value=st.session_state.user_data['open_space'],
@@ -339,13 +340,13 @@ with tab2:
             col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown("*Cost Analysis*")
+                st.markdown("Cost Analysis")
                 st.write(f"- Estimated Installation Cost: ₹{results.get('installation_cost', 0):.0f}")
                 st.write(f"- Annual Maintenance Cost: ₹{results.get('installation_cost', 0) * 0.05:.0f} (approx.)")
                 st.write(f"- Payback Period: {results.get('payback_period', 0):.1f} years")
                 
             with col2:
-                st.markdown("*Benefits*")
+                st.markdown("Benefits")
                 st.write(f"- Annual Water Savings: {results.get('annual_harvestable_water', 0):.0f} liters")
                 st.write(f"- Financial Savings: ₹{results.get('annual_harvestable_water', 0) * 0.005:.0f}/year (approx.)")
                 st.write(f"- Environmental Impact: Reduced groundwater extraction")
@@ -463,19 +464,19 @@ with tab3:
         tech_col1, tech_col2, tech_col3 = st.columns(3)
         
         with tech_col1:
-            st.markdown("*Structure Details*")
+            st.markdown("Structure Details")
             st.write(f"Type: {results.get('recommended_structure', 'N/A')}")
             st.write(f"Recommended Size: {results.get('roof_area', 0) * 0.8:.0f} liters capacity")
             st.write(f"Construction: Reinforced concrete/Plastic")
         
         with tech_col2:
-            st.markdown("*Installation Requirements*")
+            st.markdown("Installation Requirements")
             st.write(f"Space Needed: {results.get('open_space', 0) * 0.3:.1f} sq.m")
             st.write(f"Timeframe: 2-4 weeks")
             st.write(f"Professional Help: Recommended")
         
         with tech_col3:
-            st.markdown("*Maintenance*")
+            st.markdown("Maintenance")
             st.write(f"Frequency: Quarterly cleaning")
             st.write(f"Cost: ₹{results.get('installation_cost', 0) * 0.05:.0f}/year")
             st.write(f"Complexity: Low to Moderate")
@@ -494,21 +495,21 @@ with tab4:
         
         with col1:
             st.markdown("### Aquifer Characteristics")
-            st.write(f"*Type:* {results.get('aquifer_type', 'N/A')}")
+            st.write(f"Type: {results.get('aquifer_type', 'N/A')}")
             
             aquifer_info = call_api(f"{AQUIFER_API_URL}?aquifer_type={results.get('aquifer_type', '')}")
             
             if aquifer_info and aquifer_info.get('success'):
-                st.write(f"*Description:* {aquifer_info.get('description', 'N/A')}")
-                st.write(f"*Recharge Potential:* {aquifer_info.get('recharge_potential', 'N/A')}")
-                st.write(f"*Suitable Structures:* {', '.join(aquifer_info.get('suitable_structures', []))}")
+                st.write(f"Description: {aquifer_info.get('description', 'N/A')}")
+                st.write(f"Recharge Potential: {aquifer_info.get('recharge_potential', 'N/A')}")
+                st.write(f"Suitable Structures: {', '.join(aquifer_info.get('suitable_structures', []))}")
             else:
-                st.write("*Description:* Information not available for this aquifer type.")
+                st.write("Description: Information not available for this aquifer type.")
             
             st.markdown("### Water Quality")
-            st.write("*Status:* Good (based on regional data)")
-            st.write("*Suitable for:* Drinking after filtration")
-            st.write("*Contaminants:* Low levels of dissolved solids")
+            st.write("Status: Good (based on regional data)")
+            st.write("Suitable for: Drinking after filtration")
+            st.write("Contaminants: Low levels of dissolved solids")
         
         with col2:
             st.markdown("### Water Level Trends")
@@ -566,30 +567,30 @@ with tab5:
     with col1:
         st.markdown("### How It Works")
         st.markdown("""
-        1. *Input Analysis*: We analyze your roof characteristics and location
-        2. *Data Processing*: Fetch local rainfall, soil, and groundwater data
-        3. *ML Modeling*: Use machine learning to predict optimal solutions
-        4. *Recommendations*: Provide customized RWH system recommendations
-        5. *Economic Analysis*: Calculate costs, savings, and payback period
+        1. Input Analysis: We analyze your roof characteristics and location
+        2. Data Processing: Fetch local rainfall, soil, and groundwater data
+        3. ML Modeling: Use machine learning to predict optimal solutions
+        4. Recommendations: Provide customized RWH system recommendations
+        5. Economic Analysis: Calculate costs, savings, and payback period
         """)
         
         st.markdown("### Technology Stack")
         st.markdown("""
-        - *Frontend*: Streamlit Web Application
-        - *Backend*: FastAPI RESTful API
-        - *Machine Learning*: Scikit-learn models
-        - *Data Storage*: PostgreSQL with PostGIS
-        - *Visualization*: Plotly and Matplotlib
+        - Frontend: Streamlit Web Application
+        - Backend: FastAPI RESTful API
+        - Machine Learning: Scikit-learn models
+        - Data Storage: PostgreSQL with PostGIS
+        - Visualization: Plotly and Matplotlib
         """)
     
     with col2:
         st.markdown("### Benefits of Rainwater Harvesting")
         st.markdown("""
-        - 💧 *Water Security*: Reduce dependence on municipal supply
-        - 💰 *Cost Savings*: Lower water bills and reduced energy costs
-        - 🌱 *Environmental Protection*: Reduce runoff and recharge groundwater
-        - 🏙 *Urban Resilience*: Mitigate urban flooding during heavy rains
-        - 🌍 *Climate Adaptation*: Build resilience to climate change impacts
+        - 💧 Water Security: Reduce dependence on municipal supply
+        - 💰 Cost Savings: Lower water bills and reduced energy costs
+        - 🌱 Environmental Protection: Reduce runoff and recharge groundwater
+        - 🏙 Urban Resilience: Mitigate urban flooding during heavy rains
+        - 🌍 Climate Adaptation: Build resilience to climate change impacts
         """)
         
         st.markdown("### Data Sources")
@@ -610,47 +611,97 @@ with tab5:
     <p>Always check local regulations and obtain necessary permits before implementing any rainwater harvesting system.</p>
     </div>
     """, unsafe_allow_html=True)
+# ADD THIS CORRECTED BLOCK AT THE VERY END OF YOUR SCRIPT
+
+
+
+import streamlit as st
 import streamlit.components.v1 as components
 
-# URL of your chatbot deployed on Vercel
-vercel_chatbot_url = "https://jal-rakshak-ai-v3.vercel.app/"
 
-# Chatbot redirect button HTML + JS
-chatbot_button_html = f"""
+iframe_html = """
 <style>
-  .chatbot-btn {{
+  /* Style for the Floating Action Button (FAB) that opens the chat */
+  #jal-chat-fab {
     position: fixed;
     bottom: 40px;
-    right: 40px;
+    right: 20px; /* <-- Positioned from the right edge of the viewport */
     width: 64px;
     height: 64px;
-    z-index: 30000;
+    z-index: 9999;
     background: #2563eb;
     color: #fff;
     border-radius: 50%;
     box-shadow: 0 4px 16px rgba(0,0,0,0.24);
-    font-size: 2.5rem;
-    font-weight: bold;
-    text-align: center;
-    line-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    user-select: none;
-  }}
-  .chatbot-btn:hover {{
-    background: #1a4db3;
-  }}
+    font-size: 2rem;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  #jal-chat-fab:hover {
+    transform: scale(1.1);
+  }
+
+  /* Style for the iframe container, which is initially hidden */
+  #jal-chat-iframe-wrapper {
+    display: none;
+    position: fixed;
+    bottom: 120px; /* Positioned above the FAB */
+    right: 20px; /* <-- Match to FAB's right position */
+    z-index: 10000;
+  }
+
+  /* Style for the actual chatbot iframe */
+  #jal-chat-iframe {
+    width: 400px;
+    height: 600px;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    background: white;
+  }
+
+  /* Style for the container of the close button */
+  #close-btn {
+    text-align: right;
+    margin-top: 8px;
+  }
+
+  /* Style for the close button */
+  #close-btn button {
+    background:#ef4444;
+    color:white;
+    border:none;
+    border-radius:6px;
+    padding: 6px 14px;
+    font-weight:bold;
+    cursor:pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  #close-btn button:hover {
+    background: #dc2626;
+  }
 </style>
-<div
-  class="chatbot-btn"
-  title="Open Chatbot"
-  onclick="window.open('{vercel_chatbot_url}', '_blank')"
->
-  🤖
+
+<!-- The FAB icon. On click, it shows the iframe wrapper and hides itself. -->
+<div id="jal-chat-fab" onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='block'; this.style.display='none';">🤖</div>
+
+<!-- The iframe wrapper which contains the chatbot and the close button. -->
+<div id="jal-chat-iframe-wrapper">
+  <iframe id="jal-chat-iframe" src="https://jal-rakshak-ai-v3.vercel.app/"></iframe>
+  <div id="close-btn">
+    <!-- The close button. On click, it hides the iframe wrapper and shows the FAB again. -->
+    <button onclick="document.getElementById('jal-chat-iframe-wrapper').style.display='none'; document.getElementById('jal-chat-fab').style.display='flex';">Close</button>
+  </div>
 </div>
 """
 
-# Render the chatbot redirect button instead of iframe
-components.html(chatbot_button_html, height=90)
+
+components.html(iframe_html, height=820, scrolling=False)
 
 
 
